@@ -7,6 +7,7 @@ from app.models import User, Category, Task, Tag, TaskTag, FocusSession
 main = Blueprint("main", __name__)
 
 
+# Convert a task model into the fields sent back by the API.
 def serialize_task(task):
     return {
         "id": task.id,
@@ -24,6 +25,7 @@ def home():
     return render_template("index.html")
 
 
+# User routes
 @main.route("/users", methods=["POST"])
 def create_user():
     data = request.get_json()
@@ -66,6 +68,7 @@ def get_users():
     ])
 
 
+# Category routes
 @main.route("/categories", methods=["POST"])
 def create_category():
     data = request.get_json()
@@ -117,6 +120,7 @@ def get_categories():
     ])
 
 
+# Task routes
 @main.route("/tasks", methods=["POST"])
 def create_task():
     data = request.get_json()
@@ -253,6 +257,7 @@ def complete_task(task_id):
     }), 200
 
 
+# Tag routes
 @main.route("/tags", methods=["POST"])
 def create_tag():
     data = request.get_json()
@@ -340,6 +345,7 @@ def get_task_tags(task_id):
     ])
 
 
+# Focus-session routes
 @main.route("/tasks/<int:task_id>/sessions", methods=["POST"])
 def create_focus_session(task_id):
     data = request.get_json()

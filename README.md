@@ -6,6 +6,8 @@ The project is built around a normalised relational schema with six tables, fore
 
 ## What FocusFlow can do
 
+The dashboard sends requests to the Flask routes. Those routes use the models in `app/models.py` to read and save data in PostgreSQL.
+
 The app uses Flask, SQLAlchemy and PostgreSQL. Users can:
 
 - Create and manage tasks, and filter them by owner or status.

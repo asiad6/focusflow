@@ -8,6 +8,7 @@ from app.models import Category, FocusSession, Tag, Task, TaskTag, User
 app = create_app()
 
 
+# Reuse a matching row, or create it if it is not in the database yet.
 def get_or_create(model, defaults=None, **lookup):
     instance = model.query.filter_by(**lookup).first()
     if instance:
@@ -94,6 +95,7 @@ def seed():
 
     now = datetime.now(timezone.utc).replace(tzinfo=None)
 
+    # Each item describes a sample task and its tags.
     task_specs = [
         {
             "title": "Revise relational database normalisation",
@@ -242,6 +244,7 @@ def seed():
             )
             created["task_tags"] += int(created_flag)
 
+    # Each tuple has a task title, session length, and notes.
     session_specs = [
         ("Revise relational database normalisation", 25, "Covered 1NF and 2NF examples."),
         ("Revise relational database normalisation", 40, "Worked through 3NF task examples."),
