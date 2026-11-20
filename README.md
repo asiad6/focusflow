@@ -118,8 +118,8 @@ erDiagram
     }
 
     task_tags {
-        int task_id PK FK "composite PK with tag_id"
-        int tag_id PK FK "composite PK with task_id"
+        int task_id PK, FK "composite PK with tag_id"
+        int tag_id PK, FK "composite PK with task_id"
         datetime added_at
     }
 
