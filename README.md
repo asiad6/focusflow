@@ -4,21 +4,17 @@ FocusFlow is a Flask and PostgreSQL task-management app for planning study work,
 
 The project is built around a normalised relational schema with six tables, foreign keys, indexes, and a many-to-many relationship between tasks and tags.
 
-## Implemented use cases
+## What FocusFlow can do
 
-FocusFlow is a working Flask application whose routes use SQLAlchemy models and PostgreSQL for data access. The database access is part of the application rather than a standalone demonstration script.
+The app uses Flask, SQLAlchemy and PostgreSQL. Users can:
 
-| Use case | Status | Where it is implemented |
-|---|---|---|
-| Create and list users | Implemented | `POST /users`, `GET /users` |
-| Create and list per-user categories | Implemented | `POST /categories`, `GET /categories` |
-| Create, view, update, complete and delete tasks | Implemented | `/tasks` routes and dashboard |
-| Filter tasks by user and status | Implemented | `GET /tasks?user_id=1&status=pending` |
-| Assign an optional category to a task, validating category ownership | Implemented | Task create and update routes |
-| Create tags, assign them to tasks and list a task's tags | Implemented | `/tags` and task-tag routes |
-| Record a focus session for a task and list its sessions | Implemented | Task session routes |
+- Create and manage tasks, and filter them by owner or status.
+- Put tasks in categories. A task can also have no category.
+- Add tags to tasks.
+- Log focus sessions and see the sessions for a task.
+- Create users and categories.
 
-The project is presented as an individual project. If any work was completed with a team, replace this statement with a clear description of your contribution before submission.
+This is an individual project.
 
 ## Technologies
 
@@ -230,25 +226,22 @@ Open [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 The dashboard loads tasks for user `id = 1`.
 
-## Database assessment demonstrations
+## SQL examples
 
-Run the read-only examples against the local PostgreSQL database from this folder:
+From the project folder, run:
 
 ```bash
 psql -d focusflow -f assessment_queries.sql
 ```
 
-The file demonstrates owner joins, the nullable `tasks.category_id` link, the `task_tags` many-to-many relationship, filtering, grouped counts and focus-session summaries. If your database has a different name, replace `focusflow` with that name.
+The queries only read data. They show tasks with their owners and categories, tasks without categories, task tags, task counts, filters and focus-session totals.
 
-### Preparation checklist
+### Before a demo
 
-- Explain each table's purpose, primary key and foreign keys using the ER diagram above.
-- Describe the optional `tasks.category_id` link and the composite key in `task_tags`.
-- Run the examples in `assessment_queries.sql` and explain the JOIN, WHERE, GROUP BY and aggregate operations.
-- Use the existing seeded records for the demonstration; `python seed.py` inserts missing sample rows without deleting or updating existing rows.
-- Be ready to describe the indexes listed above and the routes that create, filter and retrieve tasks, tags and focus sessions.
-
-No official assessment brief or rubric file is present in this project, so this checklist covers the database features documented here and should be compared with any separate instructions from your course.
+- Be ready to explain the tables, keys and relationships in the ER diagram.
+- Run a query and talk through what it returns.
+- Show how a task can have several tags through `task_tags`.
+- Explain what `seed.py` adds to the database.
 
 ## API endpoints
 
@@ -301,9 +294,9 @@ curl -X DELETE http://127.0.0.1:5000/tasks/1
 
 The original database was too small to show the full design: one user, one category, one tag, a few tasks, one tag assignment and one focus session.
 
-The local database was checked for assessment preparation on 2026-11-20 and contained 2 users, 4 categories, 15 tasks, 7 tags, 23 task-tag links and 11 focus sessions (62 rows across these six tables). Counts can change as the application is used. The sample data includes mixed task statuses and priorities, optional categories, multiple tags on tasks, and sessions linked to different tasks.
+On 20 Nov 2026, the local database had 2 users, 4 categories, 15 tasks, 7 tags, 23 task-tag links and 11 focus sessions. That's 62 rows across these six tables. The counts can change as the app is used.
 
-`seed.py` generated the additional sample records using stable usernames, category names, task titles, tag names and task/session details. It inserts only missing records and leaves existing rows, including the original user `asya`, unchanged. Running it again is safe and may insert zero rows when all sample records already exist.
+`seed.py` adds sample users, categories, tags, tasks and focus sessions when they are missing. It doesn't update or delete existing rows, including the original user `asya`.
 
 Useful queries after seeding:
 
