@@ -48,34 +48,40 @@ def seed():
         username="asya",
         defaults={"email": "asya@example.com"},
     )
-    created["users"] += int(asya_created)
+    if asya_created:
+        created["users"] += 1
 
     jordan, jordan_created = get_or_create(
         User,
         username="jordan",
         defaults={"email": "jordan@example.com"},
     )
-    created["users"] += int(jordan_created)
+    if jordan_created:
+        created["users"] += 1
 
     university, created_flag = get_or_create(
         Category, name="University", user_id=asya.id, defaults={"color": "#6366f1"}
     )
-    created["categories"] += int(created_flag)
+    if created_flag:
+        created["categories"] += 1
 
     personal, created_flag = get_or_create(
         Category, name="Personal", user_id=asya.id, defaults={"color": "#22c55e"}
     )
-    created["categories"] += int(created_flag)
+    if created_flag:
+        created["categories"] += 1
 
     work, created_flag = get_or_create(
         Category, name="Work", user_id=asya.id, defaults={"color": "#f59e0b"}
     )
-    created["categories"] += int(created_flag)
+    if created_flag:
+        created["categories"] += 1
 
     coursework, created_flag = get_or_create(
         Category, name="Coursework", user_id=jordan.id, defaults={"color": "#38bdf8"}
     )
-    created["categories"] += int(created_flag)
+    if created_flag:
+        created["categories"] += 1
 
     tag_names = [
         "important",
@@ -90,7 +96,8 @@ def seed():
     for name in tag_names:
         tag, created_flag = get_or_create(Tag, name=name)
         tags[name] = tag
-        created["tags"] += int(created_flag)
+        if created_flag:
+            created["tags"] += 1
 
     now = datetime.now(timezone.utc).replace(tzinfo=None)
 
@@ -231,7 +238,8 @@ def seed():
                 "due_date": spec["due_date"],
             },
         )
-        created["tasks"] += int(created_flag)
+        if created_flag:
+            created["tasks"] += 1
         tasks_by_title[spec["title"]] = task
 
         for tag_name in spec["tags"]:
@@ -240,7 +248,8 @@ def seed():
                 task_id=task.id,
                 tag_id=tags[tag_name].id,
             )
-            created["task_tags"] += int(created_flag)
+            if created_flag:
+                created["task_tags"] += 1
 
     session_specs = [
         ("Revise relational database normalisation", 25, "Covered 1NF and 2NF examples."),
@@ -263,7 +272,8 @@ def seed():
             duration_minutes=duration,
             notes=notes,
         )
-        created["focus_sessions"] += int(created_flag)
+        if created_flag:
+            created["focus_sessions"] += 1
 
     db.session.commit()
     return created

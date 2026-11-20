@@ -230,38 +230,42 @@ async function loadTasks() {
         return;
     }
 
-    list.innerHTML = tasks.map(task => `
-        <div class="task">
-            <div>
-                <strong>${escapeHTML(task.title)}</strong>
-                <br><small>${escapeHTML(task.description || "No description")}</small>
+    let taskHTML = "";
+
+    for (const task of tasks) {
+        taskHTML += `
+            <div class="task">
+                <div>
+                    <strong>${escapeHTML(task.title)}</strong>
+                    <br><small>${escapeHTML(task.description || "No description")}</small>
+                </div>
+                <div class="task-actions">
+                    <span class="priority">${escapeHTML(task.priority)}</span>
+                    <button
+                        class="edit-btn"
+                        onclick="editTask(${task.id}, '${escapeHTML(task.title).replace(/'/g, "\\'")}')"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        class="delete-btn"
+                        onclick="deleteTask(${task.id})"
+                    >
+                        Delete
+                    </button>
+                    <button
+                        class="complete-btn"
+                        onclick="completeTask(${task.id})"
+                        ${task.status === "completed" ? "disabled" : ""}
+                    >
+                        ${task.status === "completed" ? "Completed \u2713" : "Complete"}
+                    </button>
+                </div>
             </div>
-           <div class="task-actions">
-    <span class="priority">${escapeHTML(task.priority)}</span>
+        `;
+    }
 
-    <button
-        class="edit-btn"
-        onclick="editTask(${task.id}, '${escapeHTML(task.title).replace(/'/g, "\\'")}')"
-    >
-        Edit
-    </button>
-<button
-    class="delete-btn"
-    onclick="deleteTask(${task.id})"
->
-    Delete
-</button>
-    <button
-        class="complete-btn"
-        onclick="completeTask(${task.id})"
-        ${task.status === "completed" ? "disabled" : ""}
-    >
-        ${task.status === "completed" ? "Completed ✓" : "Complete"}
-    </button>
-</div>
-
-        </div>
-    `).join("");
+    list.innerHTML = taskHTML;
 }
 async function editTask(taskId, currentTitle) {
     const newTitle = prompt("Edit your task:", currentTitle);
@@ -315,13 +319,12 @@ async function completeTask(taskId) {
     }
 }
 function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    })[char]);
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 async function addTask() {
