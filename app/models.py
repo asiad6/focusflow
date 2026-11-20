@@ -4,8 +4,6 @@ from datetime import datetime
 from app import db
 
 
-# Each class below maps to a table in the database.
-# Foreign keys store the links, and relationships make them easy to follow in Python.
 class User(db.Model):
     __tablename__ = "users"
 
@@ -50,7 +48,6 @@ class Task(db.Model):
     user_id = db.Column(
         db.Integer, db.ForeignKey("users.id"), nullable=False, index=True
     )
-    # A task can be saved without a category.
     category_id = db.Column(
         db.Integer, db.ForeignKey("categories.id"), nullable=True, index=True
     )
@@ -93,7 +90,6 @@ class Tag(db.Model):
 
 
 class TaskTag(db.Model):
-    # The task and tag together make the primary key for this link table.
     __tablename__ = "task_tags"
 
     task_id = db.Column(

@@ -206,14 +206,20 @@ input:focus { border-color: #8b5cf6; }
 <script>
 const USER_ID = 1;
 
-// Ask the Flask routes for this user's tasks and refresh the dashboard.
 async function loadTasks() {
     const response = await fetch(`/tasks?user_id=${USER_ID}`);
     const tasks = await response.json();
 
     document.getElementById("total").textContent = tasks.length;
 
-    const completed = tasks.filter(t => t.status === "completed").length;
+    let completed = 0;
+
+    for (const task of tasks) {
+        if (task.status === "completed") {
+            completed += 1;
+        }
+    }
+
     document.getElementById("completed").textContent = completed;
     document.getElementById("pending").textContent = tasks.length - completed;
 
@@ -308,7 +314,6 @@ async function completeTask(taskId) {
         alert("Could not complete task.");
     }
 }
-// Escape text before putting it into the task list HTML.
 function escapeHTML(value) {
     return String(value).replace(/[&<>"']/g, char => ({
         "&": "&amp;",

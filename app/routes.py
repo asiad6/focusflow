@@ -7,7 +7,6 @@ from app.models import User, Category, Task, Tag, TaskTag, FocusSession
 main = Blueprint("main", __name__)
 
 
-# Convert a task model into the fields sent back by the API.
 def serialize_task(task):
     return {
         "id": task.id,
@@ -25,7 +24,6 @@ def home():
     return render_template("index.html")
 
 
-# User routes
 @main.route("/users", methods=["POST"])
 def create_user():
     data = request.get_json()
@@ -57,18 +55,18 @@ def create_user():
 @main.route("/users", methods=["GET"])
 def get_users():
     users = User.query.order_by(User.id).all()
+    user_list = []
 
-    return jsonify([
-        {
+    for user in users:
+        user_data = {
             "id": user.id,
             "username": user.username,
             "email": user.email
         }
-        for user in users
-    ])
+        user_list.append(user_data)
 
+    return jsonify(user_list)
 
-# Category routes
 @main.route("/categories", methods=["POST"])
 def create_category():
     data = request.get_json()
@@ -101,26 +99,25 @@ def create_category():
 @main.route("/categories", methods=["GET"])
 def get_categories():
     query = Category.query
-
     user_id = request.args.get("user_id", type=int)
 
     if user_id:
         query = query.filter_by(user_id=user_id)
 
     categories = query.order_by(Category.id).all()
+    category_list = []
 
-    return jsonify([
-        {
+    for category in categories:
+        category_data = {
             "id": category.id,
             "name": category.name,
             "color": category.color,
             "user_id": category.user_id
         }
-        for category in categories
-    ])
+        category_list.append(category_data)
 
+    return jsonify(category_list)
 
-# Task routes
 @main.route("/tasks", methods=["POST"])
 def create_task():
     data = request.get_json()
@@ -257,7 +254,6 @@ def complete_task(task_id):
     }), 200
 
 
-# Tag routes
 @main.route("/tags", methods=["POST"])
 def create_tag():
     data = request.get_json()
@@ -294,15 +290,16 @@ def create_tag():
 @main.route("/tags", methods=["GET"])
 def get_tags():
     tags = Tag.query.order_by(Tag.name).all()
+    tag_list = []
 
-    return jsonify([
-        {
+    for tag in tags:
+        tag_data = {
             "id": tag.id,
             "name": tag.name
         }
-        for tag in tags
-    ])
+        tag_list.append(tag_data)
 
+    return jsonify(tag_list)
 
 @main.route("/tasks/<int:task_id>/tags/<int:tag_id>", methods=["POST"])
 def assign_tag(task_id, tag_id):
@@ -336,16 +333,17 @@ def get_task_tags(task_id):
     if not task:
         return jsonify({"error": "Task not found"}), 404
 
-    return jsonify([
-        {
-            "id": item.tag.id,
-            "name": item.tag.name
+    tag_list = []
+
+    for task_tag in task.task_tags:
+        tag_data = {
+            "id": task_tag.tag.id,
+            "name": task_tag.tag.name
         }
-        for item in task.task_tags
-    ])
+        tag_list.append(tag_data)
 
+    return jsonify(tag_list)
 
-# Focus-session routes
 @main.route("/tasks/<int:task_id>/sessions", methods=["POST"])
 def create_focus_session(task_id):
     data = request.get_json()
@@ -393,13 +391,15 @@ def get_focus_sessions(task_id):
     sessions = FocusSession.query.filter_by(
         task_id=task_id
     ).order_by(FocusSession.started_at.desc()).all()
+    session_list = []
 
-    return jsonify([
-        {
+    for session in sessions:
+        session_data = {
             "id": session.id,
             "duration_minutes": session.duration_minutes,
             "notes": session.notes,
             "started_at": session.started_at.isoformat()
         }
-        for session in sessions
-    ])
+        session_list.append(session_data)
+
+    return jsonify(session_list)
